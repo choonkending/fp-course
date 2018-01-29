@@ -222,8 +222,7 @@ filter f l =
   -> List a
   -> List a
 (++) Nil l = l
-(++) l Nil = l
-(++) (h :. t) y = h :. (t ++ y)
+(++) (h :. t) y = h :. t ++ y
 
 -- appending in terms of foldRight
 -- (++) x y = foldRight (:.) y x

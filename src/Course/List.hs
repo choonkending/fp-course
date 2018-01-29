@@ -93,7 +93,8 @@ headOr ::
 -- headOr def Nil = def
 -- headOr _ (h:._) = h
 -- headOr def list = foldRight (\a b -> a) def list
-headOr = foldRight (\a _ -> a)
+-- headOr = foldRight (\a _ -> a)
+headOr = foldRight const
 
 -- | The product of the elements of a list.
 --

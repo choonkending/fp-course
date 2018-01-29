@@ -312,7 +312,6 @@ flattenAgain = flatMap id
 seqOptional ::
   List (Optional a)
   -> Optional (List a)
-seqOptional Nil = Full Nil
 -- h :: Optional a
 -- t :: List (Optional a)
 -- We would normally recurse through the tail
@@ -321,12 +320,13 @@ seqOptional Nil = Full Nil
 -- if it is a Full a, we check t to see if 
 --      if t is Empty, return empty
 --      if it is Full, return Full of List combining a and b
--- seqOptional (h:.t) =
---   case h of 
---     Empty -> Empty
---     Full a -> case seqOptional t of
---                 Empty -> Empty
---                 Full b -> Full (a:.b)
+seqOptional Nil = Full Nil
+seqOptional (h:.t) = 
+  case h of
+    Empty -> Empty
+    Full a -> case seqOptional t of
+      Empty -> Empty
+      Full b -> Full (a :. b)
 
 -- given that mapOptional is :: (a -> b) -> Optional a -> Optional b
 -- seqOptional (h:.t) =
@@ -334,8 +334,8 @@ seqOptional Nil = Full Nil
 --     Empty -> Empty
 --     Full b -> mapOptional (b:.) (seqOptional t)
 
-seqOptional (h:.t) =
-  bindOptional (\a -> mapOptional (a:.) (seqOptional t)) h
+-- seqOptional (h:.t) =
+--   bindOptional (\a -> mapOptional (a:.) (seqOptional t)) h
 
 -- seqOptional Nil = Full Nil
 -- seqOptional (h:.t) =

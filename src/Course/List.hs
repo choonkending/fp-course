@@ -313,23 +313,48 @@ seqOptional ::
   List (Optional a)
   -> Optional (List a)
 seqOptional Nil = Full Nil
-seqOptional (h:.t) =
-  alice h (seqOptional t)
+-- h :: Optional a
+-- t :: List (Optional a)
+-- We would normally recurse through the tail
+-- First we look at h
+-- if it is Empty, just return empty
+-- if it is a Full a, we check t to see if 
+--      if t is Empty, return empty
+--      if it is Full, return Full of List combining a and b
+-- seqOptional (h:.t) =
+--   case h of 
+--     Empty -> Empty
+--     Full a -> case seqOptional t of
+--                 Empty -> Empty
+--                 Full b -> Full (a:.b)
 
--- seqOptional = foldRight (twiceOptional (:.)) (Full Nil)
-alice :: Optional a -> Optional (List a) -> Optional (List a)
--- alice x y =
---   case x of
+-- given that mapOptional is :: (a -> b) -> Optional a -> Optional b
+-- seqOptional (h:.t) =
+--   case h of
 --     Empty -> Empty
---     Full a -> case y of
---                  Empty -> Empty
---                  Full lst -> Full (a :. lst)
--- alice x y =
---   case x of
---     Empty -> Empty
---     Full e -> mapOptional (e :.) y
--- alice x y = bindOptional (\e -> mapOptional (e :.) y) x
-alice = twiceOptional (:.)
+--     Full b -> mapOptional (b:.) (seqOptional t)
+
+seqOptional (h:.t) =
+  bindOptional (\a -> mapOptional (a:.) (seqOptional t)) h
+
+-- seqOptional Nil = Full Nil
+-- seqOptional (h:.t) =
+--   alice h (seqOptional t)
+
+-- -- seqOptional = foldRight (twiceOptional (:.)) (Full Nil)
+-- alice :: Optional a -> Optional (List a) -> Optional (List a)
+-- -- alice x y =
+-- --   case x of
+-- --     Empty -> Empty
+-- --     Full a -> case y of
+-- --                  Empty -> Empty
+-- --                  Full lst -> Full (a :. lst)
+-- -- alice x y =
+-- --   case x of
+-- --     Empty -> Empty
+-- --     Full e -> mapOptional (e :.) y
+-- -- alice x y = bindOptional (\e -> mapOptional (e :.) y) x
+-- alice = twiceOptional (:.)
 
 
 -- Optional a -> Optional (List a) -> Optional (List a)

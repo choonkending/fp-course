@@ -90,14 +90,10 @@ headOr ::
 --     Nil -> a
 --     h :. t -> h
 
-headOr def Nil = def
-headOr _ (h:._) = h
-
--- headOr def l = foldRight (\a b -> 
---   case a of
---     Nil -> def
---     _ -> a
---                          ) def l
+-- headOr def Nil = def
+-- headOr _ (h:._) = h
+-- headOr def list = foldRight (\a b -> a) def list
+headOr = foldRight (\a _ -> a)
 
 -- | The product of the elements of a list.
 --
@@ -113,7 +109,7 @@ product ::
   List Int
   -> Int
 product l =
-  case l of 
+  case l of
     Nil -> 1
     (h :. t) -> h * product t
 
@@ -193,21 +189,21 @@ filter ::
   -> List a
   -> List a
 filter f l =
-  case l of 
+  case l of
     Nil -> Nil
     (h :. t) -> if f h then (h :. filter f t) else filter f t
 
 -- bool is a helper he's written
 --
 -- filter _ Nil = Nil
-  
+
 -- filter p (h :. t) =
 --   bool (filter p t) (h :. filter p t) (p h)
 
 -- filter p (h :. t) =
 --   let frank = filter p t
 --   in bool frank (h :. frank) (p h)
-  
+
 
 -- | Append two lists to a new list.
 --
@@ -275,7 +271,7 @@ flatMap ::
 -- f :: a -> List b
 -- ? :: List b
 -- flatMap f l = foldRight (\a b -> f a ++ b) Nil l
--- flatMap f = foldRight (\a -> (++) (f a)) Nil 
+-- flatMap f = foldRight (\a -> (++) (f a)) Nil
 flatMap f = foldRight ((++) . f) Nil
 
 -- | Flatten a list of lists to a list (again).
@@ -293,7 +289,7 @@ flattenAgain = flatMap id
 
 -- | Convert a list of optional values to an optional list of values.
 --
--- * If the list contains all `Full` values, 
+-- * If the list contains all `Full` values,
 -- then return `Full` list of values.
 --
 -- * If the list contains one or more `Empty` values,
@@ -317,15 +313,15 @@ seqOptional ::
   List (Optional a)
   -> Optional (List a)
 seqOptional Nil = Full Nil
-seqOptional (h:.t) = 
-  alice h (seqOptional t) 
+seqOptional (h:.t) =
+  alice h (seqOptional t)
 
 -- seqOptional = foldRight (twiceOptional (:.)) (Full Nil)
 alice :: Optional a -> Optional (List a) -> Optional (List a)
 -- alice x y =
 --   case x of
 --     Empty -> Empty
---     Full a -> case y of 
+--     Full a -> case y of
 --                  Empty -> Empty
 --                  Full lst -> Full (a :. lst)
 -- alice x y =

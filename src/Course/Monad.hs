@@ -49,8 +49,7 @@ instance Monad List where
     -> List a
     -> List b
   (=<<) =
-    error "todo: Course.Monad (=<<)#instance List"
-
+    flatMap
 -- | Binds a function on an Optional.
 --
 -- >>> (\n -> Full (n + n)) =<< Full 7
@@ -61,7 +60,7 @@ instance Monad Optional where
     -> Optional a
     -> Optional b
   (=<<) =
-    error "todo: Course.Monad (=<<)#instance Optional"
+    bindOptional
 
 -- | Binds a function on the reader ((->) t).
 --
@@ -72,9 +71,8 @@ instance Monad ((->) t) where
     (a -> ((->) t b))
     -> ((->) t a)
     -> ((->) t b)
-  (=<<) =
-    error "todo: Course.Monad (=<<)#instance ((->) t)"
-
+  (=<<) a2t2b t2a t =
+    a2t2b (t2a t) t
 -- | Witness that all things with (=<<) and (<$>) also have (<*>).
 --
 -- >>> ExactlyOne (+10) <**> ExactlyOne 8

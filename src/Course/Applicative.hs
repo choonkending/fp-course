@@ -115,14 +115,16 @@ instance Applicative Optional where
   pure ::
     a
     -> Optional a
-  pure =
-    error "todo: Course.Applicative pure#instance Optional"
+  pure a = Full a
   (<*>) ::
     Optional (a -> b)
     -> Optional a
     -> Optional b
-  (<*>) =
-    error "todo: Course.Apply (<*>)#instance Optional"
+  -- (<*>) Empty _ = Empty
+  -- (<*>) (Full f) o = (<$>) f o
+  -- (<*>) fs o = bindOptional (\f -> mapOptional f o) fs
+  -- (<*>) fs o = bindOptional (\f -> bindOptional (pure . f) o) fs
+  (<*>) = applyOptional
 
 -- | Insert into a constant function.
 --

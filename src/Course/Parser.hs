@@ -252,7 +252,18 @@ bindParser =
   -> Parser a
   -> Parser a
 (|||) =
-  error "todo: Course.Parser#(|||)"
+  -- \p1 p2 -> P(\i -> case (parse p1) i of
+  --                   UnexpectedEof -> parse p2 i
+  --                   ExpectedEof _ -> parse p2 i
+  --                   UnexpectedChar _ -> parse p2 i
+  --                   UnexpectedString _ -> parse p2 i
+  --                   r@(Result _ _) -> r
+  --            )
+  \p1 p2 -> P(\i ->
+    let r = parse p1 i
+        in
+      bool r (parse p2 i) (isErrorResult r)
+             )
 
 infixl 3 |||
 

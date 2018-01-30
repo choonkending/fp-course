@@ -175,14 +175,18 @@ instance Applicative ((->) t) where
 --
 -- >>> lift2 (+) length sum (listh [4,5,6])
 -- 18
+--
+--
+--
+-- fmap :: (a -> b) -> f a -> f b
 lift2 ::
   Applicative f =>
-  (a -> b -> c)
+  (a -> (b -> c))
   -> f a
   -> f b
   -> f c
-lift2 =
-  error "todo: Course.Applicative#lift2"
+lift2 abc fa fb =
+  (abc <$> fa) <*> fb
 
 -- | Apply a ternary function in the environment.
 --
@@ -213,8 +217,9 @@ lift3 ::
   -> f b
   -> f c
   -> f d
-lift3 =
-  error "todo: Course.Applicative#lift3"
+lift3 abcd fa fb fc =
+  -- (((abcd <$> fa) <*> fb) <*> fc)
+  (lift2 abcd fa fb) <*> fc
 
 -- | Apply a quaternary function in the environment.
 --
@@ -246,8 +251,9 @@ lift4 ::
   -> f c
   -> f d
   -> f e
-lift4 =
-  error "todo: Course.Applicative#lift4"
+lift4 abcde fa fb fc fd =
+  (lift3 abcde fa fb fc) <*> fd
+  -- pure abcde <*> fa <*> fb <*> fc <*> fd
 
 -- | Apply, discarding the value of the first argument.
 -- Pronounced, right apply.

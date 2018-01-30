@@ -151,13 +151,9 @@ mapParser ::
   (a -> b)
   -> Parser a
   -> Parser b
--- fmap2 does not work yet
--- fmap2 :: 
---   (a -> b)
---       -> f (g a)
---       -> f (g b)
--- fmap2 = (<$>) . (<$>)
-
+-- mapParser f (P p) =
+  -- P (\i -> f <$> (p i))
+-- parse :: P a -> a
 mapParser f p =
   P (\i -> f <$> parse p i)
   -- \f p ->

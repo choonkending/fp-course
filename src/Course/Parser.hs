@@ -228,7 +228,7 @@ bindParser =
   -> Parser b
   -> Parser b
 (>>>) =
-  error "todo: Course.Parser#(>>>)"
+  lift2 (flip const)
 
 -- | Return a parser that tries the first parser for a successful value.
 --

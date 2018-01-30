@@ -143,8 +143,8 @@ join = (=<<) id
   f a
   -> (a -> f b)
   -> f b
-(>>=) =
-  error "todo: Course.Monad#(>>=)"
+-- (>>=) fa a2fb = (=<<) a2fb fa
+(>>=) = flip (=<<)
 
 infixl 1 >>=
 

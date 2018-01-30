@@ -109,8 +109,7 @@ instance Monad ((->) t) where
   f (a -> b)
   -> f a
   -> f b
-(<**>) =
-  error "todo: Course.Monad#(<**>)"
+(<**>) = lift2 id
 
 infixl 4 <**>
 

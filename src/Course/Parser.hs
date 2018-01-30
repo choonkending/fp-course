@@ -84,6 +84,7 @@ onResult (UnexpectedString s)  _ =
 onResult (Result i a) k = 
   k i a
 
+-- Parser of a is a Function of Input to ParseResult of a
 data Parser a = P (Input -> ParseResult a)
 
 parse ::
@@ -124,8 +125,7 @@ natural =
 valueParser ::
   a
   -> Parser a
-valueParser =
-  error "todo: Course.Parser#valueParser"
+valueParser = \a -> P (\i -> Result i a)
 
 -- | Return a parser that succeeds with a character off the input or fails with an error if the input is empty.
 --
@@ -137,8 +137,9 @@ valueParser =
 character ::
   Parser Char
 character =
-  error "todo: Course.Parser#character"
-
+  P (\i -> case i of
+             Nil -> UnexpectedEof
+             h:.t -> Result t h)
 -- | Return a parser that maps any succeeding result with the given function.
 --
 -- >>> parse (mapParser succ character) "amz"
@@ -150,8 +151,26 @@ mapParser ::
   (a -> b)
   -> Parser a
   -> Parser b
-mapParser =
-  error "todo: Course.Parser#mapParser"
+-- fmap2 does not work yet
+-- fmap2 :: 
+--   (a -> b)
+--       -> f (g a)
+--       -> f (g b)
+-- fmap2 = (<$>) . (<$>)
+
+mapParser f p =
+  P (\i -> f <$> parse p i)
+  -- \f p ->
+  --   P (fmap2 f (parse p))
+-- f :: a -> b
+-- p :: Parser a
+-- parse p :: Input -> ParseResult a
+-- input :: Input
+-- ? :: ParseResult b
+-- Parser a ~ Input -> ParseResult a
+-- Parser a ~ f        (g          a)
+-- (Input ->)
+-- ParseResult 
 
 -- | Return a parser that puts its input into the given parser and
 --
@@ -179,7 +198,14 @@ bindParser ::
   -> Parser a
   -> Parser b
 bindParser =
-  error "todo: Course.Parser#bindParser"
+  \f p ->
+    P (\i -> case parse p i of
+               Result j a -> parse (f a) j
+               UnexpectedEof -> UnexpectedEof
+               ExpectedEof l -> ExpectedEof l
+               UnexpectedChar c -> UnexpectedChar c
+               UnexpectedString s -> UnexpectedString s
+      )
 
 -- | Return a parser that puts its input into the given parser and
 --

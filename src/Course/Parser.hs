@@ -40,7 +40,7 @@ instance Show a => Show (ParseResult a) where
     stringconcat ["Unexpected string: ", show s]
   show (Result i a) =
     stringconcat ["Result >", hlist i, "< ", show a]
-  
+
 instance Functor ParseResult where
   _ <$> UnexpectedEof =
     UnexpectedEof
@@ -73,15 +73,15 @@ onResult ::
   ParseResult a
   -> (Input -> a -> ParseResult b)
   -> ParseResult b
-onResult UnexpectedEof _ = 
+onResult UnexpectedEof _ =
   UnexpectedEof
-onResult (ExpectedEof i) _ = 
+onResult (ExpectedEof i) _ =
   ExpectedEof i
-onResult (UnexpectedChar c) _ = 
+onResult (UnexpectedChar c) _ =
   UnexpectedChar c
-onResult (UnexpectedString s)  _ = 
+onResult (UnexpectedString s)  _ =
   UnexpectedString s
-onResult (Result i a) k = 
+onResult (Result i a) k =
   k i a
 
 -- Parser of a is a Function of Input to ParseResult of a
@@ -152,7 +152,7 @@ mapParser ::
   -> Parser a
   -> Parser b
 -- mapParser f (P p) =
-  -- P (\i -> f <$> (p i))
+--   P (\i -> f <$> (p i))
 -- parse :: P a -> a
 mapParser f p =
   P (\i -> f <$> parse p i)
@@ -166,7 +166,7 @@ mapParser f p =
 -- Parser a ~ Input -> ParseResult a
 -- Parser a ~ f        (g          a)
 -- (Input ->)
--- ParseResult 
+-- ParseResult
 
 -- | Return a parser that puts its input into the given parser and
 --
@@ -194,14 +194,20 @@ bindParser ::
   -> Parser a
   -> Parser b
 bindParser =
-  \f p ->
-    P (\i -> case parse p i of
-               Result j a -> parse (f a) j
-               UnexpectedEof -> UnexpectedEof
-               ExpectedEof l -> ExpectedEof l
-               UnexpectedChar c -> UnexpectedChar c
-               UnexpectedString s -> UnexpectedString s
-      )
+  \f p -> P(\i -> onResult (parse p i)(\i' a-> parse (f a) i'))
+
+-- tony's answer
+-- bindParser =
+--   \f p ->
+--     P(\i -> case parse i of
+--               Result j a -> parse f a
+--               UnexpectedEof -> UnexpectedEof
+--               ExpectedEof -> ExpectedEof
+--               UnexpectedChar c -> UnexpectedChar c
+--               UnexpectedString s -> UnexpectedString s
+--      )
+
+-- Parser b :: P(Input -> ParseResult b)
 
 -- | Return a parser that puts its input into the given parser and
 --

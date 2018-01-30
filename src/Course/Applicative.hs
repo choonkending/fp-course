@@ -278,8 +278,7 @@ lift4 abcde fa fb fc fd =
   f a
   -> f b
   -> f b
-(*>) =
-  error "todo: Course.Applicative#(*>)"
+(*>) = lift2 (flip const)
 
 -- | Apply, discarding the value of the second argument.
 -- Pronounced, left apply.
@@ -304,8 +303,7 @@ lift4 abcde fa fb fc fd =
   f b
   -> f a
   -> f b
-(<*) =
-  error "todo: Course.Applicative#(<*)"
+(<*) = lift2 const
 
 -- | Sequences a list of structures to a structure of list.
 --

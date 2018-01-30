@@ -66,14 +66,20 @@ instance Applicative List where
   pure ::
     a
     -> List a
-  pure =
-    error "todo: Course.Applicative pure#instance List"
+  pure = \a -> a :. Nil
   (<*>) ::
     List (a -> b)
     -> List a
     -> List b
-  (<*>) =
-    error "todo: Course.Apply (<*>)#instance List"
+  (<*>) Nil _ = Nil
+-- We already have map defined for List <*>
+  (<*>) (fh:.ft) l = 
+    (<$>) fh l ++ (<*>) ft l
+
+-- -- you could write it as flatMap
+-- -- flatMap :: ((a -> b) -> List b) -> List (a -> b) -> List b
+--   (<*>) fs as =
+--     flatMap (\f -> map f as) fs
 
 -- | Witness that all things with (<*>) and pure also have (<$>).
 --

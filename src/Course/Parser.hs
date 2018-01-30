@@ -640,13 +640,13 @@ instance Applicative Parser where
     a
     -> Parser a
   pure =
-    error "todo: Course.Parser pure#instance Parser"
+    valueParser
   (<*>) ::
     Parser (a -> b)
     -> Parser a
     -> Parser b
   (<*>) =
-    error "todo: Course.Parser (<*>)#instance Parser"
+    \f a -> bindParser (\ff -> mapParser ff a) f
 
 -- | Write a Monad instance for a @Parser@.
 instance Monad Parser where

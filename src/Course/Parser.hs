@@ -677,8 +677,29 @@ phoneParser =
 -- Result > rest< Person {age = 123, firstName = "Fred", surname = "Clarkson", smoker = 'y', phone = "123-456.789"}
 personParser ::
   Parser Person
+-- personParser =
+--   ageParser >>= \age ->
+--     spaces1 >>= \_ ->
+--       firstNameParser >>= \firstName ->
+--         spaces1 >>= \_ ->
+--           surnameParser >>= \surName ->
+--             spaces1 >>= \_ ->
+--               smokerParser >>= \smoker ->
+--                 spaces1 >>= \_ ->
+--                   phoneParser >>= \phone ->
+--                     pure (Person age firstName surName smoker phone)
+
 personParser =
-  error "todo: Course.Parser#personParser"
+  Person <$>
+    ageParser <*>
+      spaces1 *>
+        firstNameParser <*>
+          spaces1 *>
+            surnameParser <*>
+              spaces1 *>
+                smokerParser <*>
+                  spaces1 *>
+                    phoneParser
 
 -- Make sure all the tests pass!
 

@@ -597,7 +597,7 @@ smokerParser =
 phoneBodyParser ::
   Parser Chars
 phoneBodyParser =
-  error "todo: Course.Parser#phoneBodyParser"
+  list (digit ||| is '.' ||| is '-')
 
 -- | Write a parser for Person.phone.
 --
@@ -618,8 +618,18 @@ phoneBodyParser =
 -- True
 phoneParser ::
   Parser Chars
+-- phoneParser =
+--   digit >>= \d ->
+--     phoneBodyParser >>= \b ->
+--       is '#' >>= \_ ->
+--         pure (d :. b)
+-- phoneParser =
+--   do d <- digit
+--      b <- phoneBodyParser
+--      is '#'
+--      pure (d:.b)
 phoneParser =
-  error "todo: Course.Parser#phoneParser"
+  (:.) <$> digit <*> phoneBodyParser <* (is '#')
 
 -- | Write a parser for Person.
 --

@@ -474,8 +474,7 @@ thisMany ::
   -> Parser a
   -> Parser (List a)
 thisMany =
-  error "todo: Course.Parser#thisMany"
-
+  \n p ->  sequenceParser (replicate n p)
 -- | Write a parser for Person.age.
 --
 -- /Age: positive integer/

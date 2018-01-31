@@ -80,7 +80,14 @@ the contents of c
 main ::
   IO ()
 main =
-  error "todo: Course.FileIO#main"
+  getArgs >>= \s ->
+    case s of
+      Nil -> putStrLn "pass args"
+      h:._ -> run h
+  -- do a <- getArgs
+  --    case a of
+  --      Nil -> putStrLn "pass args silly"
+  --      h:._ -> run h
 
 -- Given a file name, read it and for each line in that file, read and print contents of each.
 -- Use @getFiles@ and @printFiles@.
@@ -88,15 +95,19 @@ run ::
   FilePath
   -> IO ()
 run =
-  error "todo: Course.FileIO#run"
+  -- \name -> void (\(_, c) -> printFiles <$> (getFiles (lines c))) <$> (getFile name)
+  \name ->
+    do c <- readFile name
+       q <- getFiles (lines c)
+       printFiles q
 
 -- Given a list of file names, return list of (file name and file contents).
 -- Use @getFile@.
 getFiles ::
   List FilePath
   -> IO (List (FilePath, Chars))
-getFiles =
-  error "todo: Course.FileIO#getFiles"
+getFiles = sequence . (<$>) getFile
+--  \list -> sequence (getFile <$> list)
 
 -- Given a file name, return (file name and file contents).
 -- Use @readFile@.
@@ -105,7 +116,8 @@ getFile ::
   -> IO (FilePath, Chars)
 getFile =
   -- \name -> readFile name >>= \c -> pure (name, c)
-  \name -> (\c -> (name, c)) <$> readFile name
+  -- \name -> (\c -> (name, c)) <$> readFile name
+  lift2 (<$>) (,) readFile
 
 -- Given a list of (file name and file contents), print each.
 -- Use @printFile@.

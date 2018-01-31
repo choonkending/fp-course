@@ -112,7 +112,9 @@ printFiles ::
   List (FilePath, Chars)
   -> IO ()
 printFiles =
-  error "todo: Course.FileIO#printFiles"
+  -- \list -> void (sequence ((\(n, c) -> printFile n c) <$> list))
+  -- \list -> void (sequence ((<$>) (uncurry printFile) list))
+  void . sequence . (<$>) (uncurry printFile)
 
 -- Given the file name, and file contents, print them.
 -- Use @putStrLn@.
@@ -121,4 +123,7 @@ printFile ::
   -> Chars
   -> IO ()
 printFile =
-  error "todo: Course.FileIO#printFile"
+  -- \fp c -> putStrLn (fp ++ c)
+  \name contents ->
+    do putStrLn ("======" ++ name)
+       putStrLn contents

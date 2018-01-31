@@ -84,6 +84,10 @@ instance Functor ((->) t) where
     -> ((->) t a)
     -> ((->) t b)
   -- (<$>) a2b t2a t = a2b (t2a t)
+  -- Given that type (.) is
+  -- (.)   :: (b -> c) -> (a -> b) -> a -> c
+  -- (<$>) :: (a -> b) -> (t -> a) -> t -> b
+  -- (<$>) = (.)
   (<$>) = (.)
 
 -- | Anonymous map. Maps a constant value on a functor.

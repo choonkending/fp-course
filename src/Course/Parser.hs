@@ -536,7 +536,26 @@ firstNameParser =
 surnameParser ::
   Parser Chars
 surnameParser =
-  error "todo: Course.Parser#surnameParser"
+  -- upper and then, call it u
+  -- exactly 5 lower and then, call it f,
+  -- (0 or many) lower and then, call it r,
+  -- always (u :. f ++ r)
+  --
+  -- upper >>= \u ->
+  -- thisMany 5 lower >>= \f ->
+  -- list lower >>= \r ->
+  -- pure (u :. f ++ r)
+  -- do
+  --   u <- upper
+  --   f <- thisMany 5 lower
+  --   r <- list lower
+  --   pure (u :. f ++ r)
+  lift3
+    (\u f r -> u :. f ++ r)
+    upper
+    (thisMany 5 lower)
+    (list lower)
+
 
 -- | Write a parser for Person.smoker.
 --

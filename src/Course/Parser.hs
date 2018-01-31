@@ -288,11 +288,13 @@ infixl 3 |||
 --
 -- >>> parse (list (character *> valueParser 'v')) ""
 -- Result >< ""
+
+-- 0  or many things is equal to 1 or many things or nil
 list ::
   Parser a
   -> Parser (List a)
-list =
-  error "todo: Course.Parser#list"
+list p =
+  list1 p ||| pure Nil
 
 -- | Return a parser that produces at least one value from the given parser then
 -- continues producing a list of values from the given parser (to ultimately produce a non-empty list).
@@ -310,8 +312,14 @@ list =
 list1 ::
   Parser a
   -> Parser (List a)
-list1 =
-  error "todo: Course.Parser#list1"
+list1 p =
+  p >>= \x ->
+  list p >>= \y ->
+  pure (x:.y)
+
+-- p and then, call it x
+-- (0 or many) p and then, call it y
+-- always (x:.y)
 
 -- | Return a parser that produces a character but fails if
 --

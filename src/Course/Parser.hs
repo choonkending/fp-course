@@ -312,10 +312,19 @@ list p =
 list1 ::
   Parser a
   -> Parser (List a)
-list1 p =
-  p >>= \x ->
-  list p >>= \y ->
-  pure (x:.y)
+-- list1 p =
+  -- p >>= \x ->
+  -- list p >>= \y ->
+  -- pure (x:.y)
+-- list1 = \p -> lift2 (:.) p (list p)
+-- \t2a2b t2a -> t -> t2a2b t (t2a t)
+
+-- \p -> lift2 (:.) p (list p)
+-- \p -> t2a2b      p t2a
+list1 =
+  lift2 (:.) <*> list
+
+-- teach cons about parsers, 1, 0 or many
 
 -- p and then, call it x
 -- (0 or many) p and then, call it y
@@ -338,7 +347,11 @@ satisfy ::
   (Char -> Bool)
   -> Parser Char
 satisfy =
-  error "todo: Course.Parser#satisfy"
+-- (>>=) :: Parser a -> (a -> Parser b) -> Parser b
+  -- \c2b -> character >>= \c ->
+    -- bool (unexpectedCharParser c) (pure c) (c2b c)
+  \c2b -> character >>=
+    lift3 bool unexpectedCharParser pure c2b
 
 -- | Return a parser that produces the given character but fails if
 --
